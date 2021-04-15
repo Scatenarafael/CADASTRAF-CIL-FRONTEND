@@ -13,7 +13,7 @@ import '../../styles/pages/create-client.css';
 // import thunk from 'redux-thunk';
 // import { Provider } from 'react-redux';
 // import { getPosition } from '../actions/mapActions'
-import Inputlist from '../elementos/Inputlist';
+// import Inputlist from '../elementos/Inputlist';
 import Leaflet from 'leaflet';
 import mapMarkerImg from '../../images/marker.svg';
 
@@ -29,6 +29,14 @@ const mapIcon = Leaflet.icon({
 function CreateClient(props) {
   // const store = createStore(chDataReducer, applyMiddleware(thunk));
   const [currentPosition, setCurrentPosition] = useState([-20.2759398, -50.2531764]);
+  const [name, setName] = useState();
+  const [cnpj, setCnpj] = useState();
+  const [address, setAddress] = useState();
+  const [business_line, setBusiness_Line] = useState();
+  const [about, setAbout] = useState();
+  const [contactName, setContactName] = useState();
+  const [contactCel, setContactCel] = useState();
+  const [contactBusiness_Position, setContactBusiness_Position] = useState();
 
   useEffect(() => {
     if (localStorage.getItem('currentPosition') != null) {
@@ -61,6 +69,33 @@ function CreateClient(props) {
     e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + '-' + x[3];
   }
 
+  function handleSubmit() {
+    setName(document.getElementById('name-input').value);
+    setCnpj(document.getElementById('cnpj-input').value);
+    setAddress(document.getElementById('address-input').value);
+    setBusiness_Line(document.getElementById('business_line-input').value);
+    setAbout(document.getElementById('about-input').value);
+    setContactName(document.getElementById('contact_name-input').value);
+    setContactCel(document.getElementById('contact_cel-input').value);
+    setContactBusiness_Position(document.getElementById('contact_business_position-input').value);
+
+    const myForm = document.getElementById('form-data');
+
+    const formData = new FormData(myForm);
+
+    formData.append('name', name);
+    formData.append('cnpj', cnpj);
+    formData.append('address', address);
+    formData.append('latitude', String(currentPosition[0]));
+    formData.append('longitude', String(currentPosition[1]));
+    formData.append('business_line', business_line);
+    formData.append('about', about);
+    formData.append('contactName', contactName);
+    formData.append('contactCel', contactCel);
+    formData.append('contactBusiness_Position', contactBusiness_Position)
+
+
+  }
 
   return (
     // <Provider store={store}>
@@ -70,7 +105,7 @@ function CreateClient(props) {
         <Sidebar />
 
         <main>
-          <form className="create-client-form">
+          <form className="create-client-form" id="form-data">
             <fieldset>
               <legend>Dados</legend>
               <div className="mapview-container-cc">
@@ -92,43 +127,64 @@ function CreateClient(props) {
 
               </div>
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="name-input">Razão Social</label>
-                  <input id="name-input" />
-                </form>
+                <label htmlFor="name-input">Razão Social</label>
+                <input id="name-input"
+                  onChange={
+                    (event) => {
+                      setName(event.target.value);
+                    }}
+                />
               </div>
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="cnpj-input">CNPJ</label>
-                  <input id="cnpj-input" onInput={(event) => { cnpjMask(event) }} />
-                </form>
-              </div>
-
-              <div className="input-block">
-                <form action="">
-                  <label htmlFor="address-input">Endereço</label>
-                  <input id="address-input" />
-                </form>
+                <label htmlFor="cnpj-input">CNPJ</label>
+                <input id="cnpj-input" onChange={
+                  (event) => {
+                    cnpjMask(event);
+                    setCnpj(event.target.value);
+                  }} />
               </div>
 
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="branch-input">Ramo do Negócio</label>
-                  <Inputlist id="branch-input" />
-                </form>
+                <label htmlFor="address-input">Endereço</label>
+                <input id="address-input"
+                  onChange={
+                    (event) => {
+                      setAddress(event.target.value);
+                    }}
+                />
               </div>
 
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="about-input">Sobre <span>Máximo de 300 caracteres</span></label>
-                  <textarea id="about-input" maxLength={300} />
-                </form>
+                <label htmlFor="branch-input">Ramo do Negócio</label>
+                <input list="business_lines" name="business_line" id="business_line-input"
+                  onChange={
+                    (event) => {
+                      setBusiness_Line(event.target.value);
+                    }}
+                />
+                <datalist id="business_lines">
+                  <option value="Supermercados" />
+                  <option value="Mercearias" />
+                  <option value="Padarias" />
+                  <option value="Lanchonetes" />
+                  <option value="Lojas de Roupas" />
+                  <option value="Lojas de Variedades" />
+                  <option value="Consumidor final" />
+                </datalist>
               </div>
 
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="images">Fotos</label>
-                </form>
+                <label htmlFor="about-input">Sobre <span>Máximo de 300 caracteres</span></label>
+                <textarea id="about-input" maxLength={300}
+                  onChange={
+                    (event) => {
+                      setAbout(event.target.value);
+                    }}
+                />
+              </div>
+
+              <div className="input-block">
+                <label htmlFor="images">Fotos</label>
                 <div className="uploaded-image">
 
                 </div>
@@ -143,26 +199,36 @@ function CreateClient(props) {
               <legend>Contato</legend>
 
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="contact-name">Nome</label>
-                  <input id="contact-name" />
-                </form>
+                <label htmlFor="contact-name">Nome</label>
+                <input id="contact_name-input"
+                  onChange={
+                    (event) => {
+                      setContactName(event.target.value);
+                    }}
+                />
               </div>
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="contact-cel">
-                    <FaWhatsapp size={40} color="#39CC83" />
+                <label htmlFor="contact_cel-input">
+                  <FaWhatsapp size={40} color="#39CC83" />
                     Telefone
                   </label>
-                  <input id="contact-cel" onInput={(e) => { telMask(e) }} />
-                </form>
+                <input id="contact_cel-input"
+                  onChange={
+                    (event) => {
+                      telMask(event);
+                      setContactCel(event.target.value);
+                    }}
+                />
               </div>
 
               <div className="input-block">
-                <form action="">
-                  <label htmlFor="business-position">Cargo</label>
-                  <input id="business-position" />
-                </form>
+                <label htmlFor="business-position">Cargo</label>
+                <input id="contact_business_position-input"
+                  onChange={
+                    (event) => {
+                      setContactBusiness_Position(event.target.value);
+                    }}
+                />
               </div>
               {/* 
                 <div className="input-block">
@@ -175,7 +241,7 @@ function CreateClient(props) {
                 </div> */}
             </fieldset>
 
-            <button className="confirm-button" type="submit">
+            <button type="button" className="confirm-button" onClick={handleSubmit}>
               Confirmar
           </button>
           </form>
