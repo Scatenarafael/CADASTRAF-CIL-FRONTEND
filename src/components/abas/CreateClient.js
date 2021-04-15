@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
+import { useHistory } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 
 import { FiPlus } from "react-icons/fi";
 import Sidebar from '../elementos/Sidebar'
 import { FaWhatsapp } from "react-icons/fa";
+import api from '../../services/api';
 
 import '../../styles/pages/create-client.css';
 
@@ -27,16 +28,19 @@ const mapIcon = Leaflet.icon({
 })
 
 function CreateClient(props) {
+  const history = useHistory();
   // const store = createStore(chDataReducer, applyMiddleware(thunk));
   const [currentPosition, setCurrentPosition] = useState([-20.2759398, -50.2531764]);
   const [name, setName] = useState();
   const [cnpj, setCnpj] = useState();
   const [address, setAddress] = useState();
-  const [business_line, setBusiness_Line] = useState();
+  const [business_line, setBusiness_Line] = useState("");
   const [about, setAbout] = useState();
   const [contactName, setContactName] = useState();
   const [contactCel, setContactCel] = useState();
-  const [contactBusiness_Position, setContactBusiness_Position] = useState();
+  const [contactBusiness_position, setContactBusiness_Position] = useState();
+  const [images, setImages] = useState([]);
+  const [imagesPreview, setImagesPreview] = useState([]);
 
   useEffect(() => {
     if (localStorage.getItem('currentPosition') != null) {
@@ -68,8 +72,21 @@ function CreateClient(props) {
     var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
     e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + '-' + x[3];
   }
+  function handleSelectImages(event) {
 
-  function handleSubmit() {
+    const selectedImages = Array.from(event.target.files);
+    setImages(selectedImages);
+
+    const selectedImagesPreview = selectedImages.map((image) => {
+      return URL.createObjectURL(image);
+    })
+
+    setImagesPreview(selectedImagesPreview);
+
+  }
+
+
+  async function handleSubmit() {
     setName(document.getElementById('name-input').value);
     setCnpj(document.getElementById('cnpj-input').value);
     setAddress(document.getElementById('address-input').value);
@@ -84,17 +101,41 @@ function CreateClient(props) {
     const formData = new FormData(myForm);
 
     formData.append('name', name);
-    formData.append('cnpj', cnpj);
+    formData.append('cnpj', String(cnpj));
     formData.append('address', address);
     formData.append('latitude', String(currentPosition[0]));
     formData.append('longitude', String(currentPosition[1]));
-    formData.append('business_line', business_line);
+    formData.append('business_line', String(business_line));
     formData.append('about', about);
     formData.append('contactName', contactName);
-    formData.append('contactCel', contactCel);
-    formData.append('contactBusiness_Position', contactBusiness_Position)
+    formData.append('contactCel', String(contactCel));
+    formData.append('contactBusiness_position', contactBusiness_position)
 
+    images.forEach(
+      (image) => {
+        formData.append('images', image);
+      });
 
+    console.log(
+      currentPosition,
+      name,
+      cnpj,
+      address,
+      business_line,
+      about,
+      contactName,
+      contactCel,
+      contactBusiness_position,
+      images
+    );
+
+    try {
+      await api.post('create-client', formData)
+      alert('Cadastro realizado com sucesso!');
+      history.push('/');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -157,7 +198,7 @@ function CreateClient(props) {
               <div className="input-block">
                 <label htmlFor="branch-input">Ramo do Negócio</label>
                 <input list="business_lines" name="business_line" id="business_line-input"
-                  onChange={
+                  onInput={
                     (event) => {
                       setBusiness_Line(event.target.value);
                     }}
@@ -189,9 +230,21 @@ function CreateClient(props) {
 
                 </div>
 
-                <button className="new-image">
-                  <FiPlus size={24} color="#72e175" />
-                </button>
+                <div className="images-container">
+                  {
+                    imagesPreview.map(image => {
+                      return (
+                        <img key={image} src={image} alt={name} />
+                      )
+                    })
+                  }
+
+                  <label htmlFor="image[]" className="new-image">
+                    <FiPlus size={24} color="#72e175" />
+                  </label>
+
+                </div>
+                <input multiple onChange={handleSelectImages} type="file" id="image[]" />
               </div>
             </fieldset>
 

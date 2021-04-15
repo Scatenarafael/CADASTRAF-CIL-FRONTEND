@@ -1,9 +1,10 @@
-.mapview-container-cc{
+.mapview-container-cc {
   height: 280px;
   width: 100%;
   margin-top: 0;
   margin-bottom: 30px;
 }
+
 #page-create-client {
   display: flex;
 }
@@ -29,7 +30,7 @@ form.create-client-form fieldset {
   border: 0;
 }
 
-form.create-client-form fieldset + fieldset {
+form.create-client-form fieldset+fieldset {
   margin-top: 80px;
 }
 
@@ -46,7 +47,7 @@ form.create-client-form fieldset legend {
   padding-bottom: 24px;
 }
 
-form.create-client-form .input-block + .input-block {
+form.create-client-form .input-block+.input-block {
   margin-top: 24px;
 }
 
@@ -88,13 +89,34 @@ form.create-client-form .input-block textarea {
   line-height: 28px;
 }
 
+form.create-client-form .input-block .images-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 16px;
+}
+
+form.create-client-form .input-block .images-container img{
+  width: 100%;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
 form.create-client-form .input-block .new-image {
   width: 100%;
-  height: 64px;
+  height: 96px;
   background: #F5F8FA;
   border: 1px dashed #72e175;
   border-radius: 20px;
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form.create-client-form .input-block input[type=file] {
+  display: none;
 }
 
 form.create-client-form .input-block .button-select {
