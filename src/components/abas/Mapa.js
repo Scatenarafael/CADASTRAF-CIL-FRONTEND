@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import '../../App.css';
 import logoImg from '../../images/logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import Leaflet from 'leaflet';
 import mapMarkerImg from '../../images/marker.svg';
@@ -26,7 +26,7 @@ const mapIcon = Leaflet.icon({
 
 
 function Mapa(props) {
-
+  const history = useHistory();
   // const store = createStore(chDataReducer, applyMiddleware(thunk))
   // const chData = store.getState();
 
@@ -88,6 +88,7 @@ function Mapa(props) {
         .then(function (response) {
           setCurrentPosition([response.data.results[0].geometry.location.lat, response.data.results[0].geometry.location.lng]);
           localStorage.setItem('currentPosition', JSON.stringify({ address: event.target.value, respectivePosition: [response.data.results[0].geometry.location.lat, response.data.results[0].geometry.location.lng] }));
+          history.push('/clientes/create-client');
           console.log(event.target.value);
           event.target.value = "";
         })

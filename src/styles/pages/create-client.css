@@ -51,6 +51,47 @@ form.create-client-form .input-block+.input-block {
   margin-top: 24px;
 }
 
+form.create-client-form .input-block .radio-input {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+form.create-client-form .input-block .radio-input label {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+
+
+form.create-client-form .input-block .radio-input input[type=radio] {
+  cursor: pointer;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  outline: none;
+  border: 2px solid #72e175;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+form.create-client-form .input-block .radio-input input[type=radio]::before {
+  content: '';
+  position: absolute;
+  height: 30px;
+  width: 30px;
+  background: #72e175;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+form.create-client-form .input-block .radio-input input[type=radio]:checked:before {
+  opacity: 1;
+}
+
 form.create-client-form .input-block label {
   display: flex;
   align-items: center;
@@ -95,7 +136,7 @@ form.create-client-form .input-block .images-container {
   grid-gap: 16px;
 }
 
-form.create-client-form .input-block .images-container img{
+form.create-client-form .input-block .images-container img {
   width: 100%;
   height: 96px;
   object-fit: cover;

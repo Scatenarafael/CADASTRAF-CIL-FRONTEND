@@ -32,9 +32,9 @@ function CreateClient(props) {
   // const store = createStore(chDataReducer, applyMiddleware(thunk));
   const [currentPosition, setCurrentPosition] = useState([-20.2759398, -50.2531764]);
   const [name, setName] = useState();
-  const [cnpj, setCnpj] = useState();
+  const [cpfcnpj, setCpfCnpj] = useState();
   const [address, setAddress] = useState();
-  const [business_line, setBusiness_Line] = useState("");
+  const [businessLine, setbusinessLine] = useState();
   const [about, setAbout] = useState();
   const [contactName, setContactName] = useState();
   const [contactCel, setContactCel] = useState();
@@ -46,10 +46,11 @@ function CreateClient(props) {
     if (localStorage.getItem('currentPosition') != null) {
       try {
         if (JSON.parse(localStorage.getItem('currentPosition')).address) {
-          let address = JSON.parse(localStorage.getItem('currentPosition')).address;
+          let Address = JSON.parse(localStorage.getItem('currentPosition')).address;
           let respPos = JSON.parse(localStorage.getItem('currentPosition')).respectivePosition;
           setCurrentPosition(respPos);
-          document.querySelector('#address-input').value = address;
+          document.querySelector('#address-input').value = Address;
+          setAddress(Address);
           console.log(address, respPos);
         } else {
           let respPos = JSON.parse(localStorage.getItem('currentPosition')).respectivePosition;
@@ -60,12 +61,17 @@ function CreateClient(props) {
         console.log(e)
       };
     }
-  }, [])
+  }, [address])
 
   function cnpjMask(e) {
 
     var x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,3})(\d{0,3})(\d{0,4})(\d{0,2})/);
     e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + '/' + x[4] + (x[5] ? '-' + x[5] : '');
+  }
+  function cpfMask(e) {
+
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})/);
+    e.target.value = !x[2] ? x[1] : x[1] + '.' + x[2] + '.' + x[3] + (x[4] ? '-' + x[4] : '');
   }
   function telMask(e) {
 
@@ -88,9 +94,9 @@ function CreateClient(props) {
 
   async function handleSubmit() {
     setName(document.getElementById('name-input').value);
-    setCnpj(document.getElementById('cnpj-input').value);
+    setCpfCnpj(document.getElementById('cpfcnpj-input').value);
     setAddress(document.getElementById('address-input').value);
-    setBusiness_Line(document.getElementById('business_line-input').value);
+    setbusinessLine(document.getElementById('businessline-input').value);
     setAbout(document.getElementById('about-input').value);
     setContactName(document.getElementById('contact_name-input').value);
     setContactCel(document.getElementById('contact_cel-input').value);
@@ -101,11 +107,10 @@ function CreateClient(props) {
     const formData = new FormData(myForm);
 
     formData.append('name', name);
-    formData.append('cnpj', String(cnpj));
+    formData.append('cnpj', String(cpfcnpj));
     formData.append('address', address);
     formData.append('latitude', String(currentPosition[0]));
     formData.append('longitude', String(currentPosition[1]));
-    formData.append('business_line', String(business_line));
     formData.append('about', about);
     formData.append('contactName', contactName);
     formData.append('contactCel', String(contactCel));
@@ -119,9 +124,9 @@ function CreateClient(props) {
     console.log(
       currentPosition,
       name,
-      cnpj,
+      cpfcnpj,
       address,
-      business_line,
+      businessLine,
       about,
       contactName,
       contactCel,
@@ -142,9 +147,7 @@ function CreateClient(props) {
     // <Provider store={store}>
     <div>
       <div id="page-create-client">
-
         <Sidebar />
-
         <main>
           <form className="create-client-form" id="form-data">
             <fieldset>
@@ -165,7 +168,6 @@ function CreateClient(props) {
                   >
                   </Marker>
                 </MapContainer>
-
               </div>
               <div className="input-block">
                 <label htmlFor="name-input">Razão Social</label>
@@ -177,12 +179,23 @@ function CreateClient(props) {
                 />
               </div>
               <div className="input-block">
-                <label htmlFor="cnpj-input">CNPJ</label>
-                <input id="cnpj-input" onChange={
+                <div className="radio-input">
+                  <input className="radio" type="radio" id="radio-cpf" name="cpf-cnpj" />
+                  <label htmlFor="radio-cpf">CPF</label>
+                  <input className="radio" type="radio" id="radio-cnpj" name="cpf-cnpj" />
+                  <label htmlFor="radio-cnpj">CNPJ</label>
+                </div>
+                <input id="cpfcnpj-input" onChange={
                   (event) => {
-                    cnpjMask(event);
-                    setCnpj(event.target.value);
-                  }} />
+                    if (document.getElementById('radio-cpf').checked){
+                      cpfMask(event);
+                      setCpfCnpj(event.target.value);
+                    }else{
+                      cnpjMask(event.target.value);
+                      setCpfCnpj(event.target.value);
+                    }
+                  }}
+                />
               </div>
 
               <div className="input-block">
@@ -196,14 +209,14 @@ function CreateClient(props) {
               </div>
 
               <div className="input-block">
-                <label htmlFor="branch-input">Ramo do Negócio</label>
-                <input list="business_lines" name="business_line" id="business_line-input"
-                  onInput={
+                <label htmlFor="businessline-input">Ramo do Negócio</label>
+                <input list="businesslines" name="businessline" id="businessline-input"
+                  onChange={
                     (event) => {
-                      setBusiness_Line(event.target.value);
+                      setbusinessLine(event.target.value);
                     }}
                 />
-                <datalist id="business_lines">
+                <datalist id="businesslines">
                   <option value="Supermercados" />
                   <option value="Mercearias" />
                   <option value="Padarias" />
@@ -227,7 +240,6 @@ function CreateClient(props) {
               <div className="input-block">
                 <label htmlFor="images">Fotos</label>
                 <div className="uploaded-image">
-
                 </div>
 
                 <div className="images-container">
@@ -238,16 +250,13 @@ function CreateClient(props) {
                       )
                     })
                   }
-
                   <label htmlFor="image[]" className="new-image">
                     <FiPlus size={24} color="#72e175" />
                   </label>
-
                 </div>
                 <input multiple onChange={handleSelectImages} type="file" id="image[]" />
               </div>
             </fieldset>
-
             <fieldset>
               <legend>Contato</legend>
 
