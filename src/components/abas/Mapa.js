@@ -1,10 +1,3 @@
-// import Form from '../elementos/Form'
-// import LocalizaBTN from '../elementos/LocalizaBTN';
-// import RadioLocEnd from '../elementos/RadioLocEnd';
-// import { Provider } from 'react-redux';
-// import { createStore, applyMiddleware } from 'redux';
-// import chDataReducer from '../reducers/mapReducer';
-// import thunk from 'redux-thunk';
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import '../../App.css';
@@ -27,8 +20,6 @@ const mapIcon = Leaflet.icon({
 
 function Mapa(props) {
   const history = useHistory();
-  // const store = createStore(chDataReducer, applyMiddleware(thunk))
-  // const chData = store.getState();
 
   const [clients, setClients] = useState([]);
   const [currentPosition, setCurrentPosition] = useState([-20.2759398, -50.2531764]);
@@ -106,7 +97,6 @@ function Mapa(props) {
   }, [])
 
   return (
-    // <Provider store={store}>
     <div className="map-container">
       <div className="left-side">
         <div className="img-container">
@@ -177,7 +167,7 @@ function Mapa(props) {
                     {client.name}
 
                     <div>
-                      <Link to={`/clientes/${client.id}`}>
+                      <Link to={`/clientes/${client._id}`}>
                         <FiArrowRight size={20} color="#FFF" />
                       </Link>
                     </div>
@@ -191,7 +181,6 @@ function Mapa(props) {
         </MapContainer>
       </div>
     </div>
-    // </Provider>
   );
 }
 

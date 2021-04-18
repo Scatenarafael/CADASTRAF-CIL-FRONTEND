@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-
 import { FiPlus } from "react-icons/fi";
 import Sidebar from '../elementos/Sidebar'
 import { FaWhatsapp } from "react-icons/fa";
 import api from '../../services/api';
-
 import '../../styles/pages/create-client.css';
-
-// import { createStore, applyMiddleware } from 'redux';
-// import chDataReducer from '../reducers/mapReducer';
-// import thunk from 'redux-thunk';
-// import { Provider } from 'react-redux';
-// import { getPosition } from '../actions/mapActions'
-// import Inputlist from '../elementos/Inputlist';
 import Leaflet from 'leaflet';
 import mapMarkerImg from '../../images/marker.svg';
 
@@ -29,7 +20,6 @@ const mapIcon = Leaflet.icon({
 
 function CreateClient(props) {
   const history = useHistory();
-  // const store = createStore(chDataReducer, applyMiddleware(thunk));
   const [currentPosition, setCurrentPosition] = useState([-20.2759398, -50.2531764]);
   const [name, setName] = useState();
   const [cpfcnpj, setCpfCnpj] = useState();
@@ -107,7 +97,7 @@ function CreateClient(props) {
     const formData = new FormData(myForm);
 
     formData.append('name', name);
-    formData.append('cnpj', String(cpfcnpj));
+    formData.append('cpfcnpj', String(cpfcnpj));
     formData.append('address', address);
     formData.append('latitude', String(currentPosition[0]));
     formData.append('longitude', String(currentPosition[1]));
@@ -144,7 +134,6 @@ function CreateClient(props) {
   }
 
   return (
-    // <Provider store={store}>
     <div>
       <div id="page-create-client">
         <Sidebar />
@@ -187,12 +176,15 @@ function CreateClient(props) {
                 </div>
                 <input id="cpfcnpj-input" onChange={
                   (event) => {
-                    if (document.getElementById('radio-cpf').checked){
+                    if (document.getElementById('radio-cpf').checked) {
                       cpfMask(event);
+                      setbusinessLine("Consumidor final")
                       setCpfCnpj(event.target.value);
-                    }else{
-                      cnpjMask(event.target.value);
+                      document.getElementById('businessline-input').disabled = true;
+                    } else {
+                      cnpjMask(event);
                       setCpfCnpj(event.target.value);
+                      document.getElementById('businessline-input').disabled = false;
                     }
                   }}
                 />
@@ -292,15 +284,6 @@ function CreateClient(props) {
                     }}
                 />
               </div>
-              {/* 
-                <div className="input-block">
-                  <label htmlFor="open_on_weekends">Atende fim de semana</label>
-
-                  <div className="button-select">
-                    <button type="button" className="active">Sim</button>
-                    <button type="button">Não</button>
-                  </div>
-                </div> */}
             </fieldset>
 
             <button type="button" className="confirm-button" onClick={handleSubmit}>
@@ -310,7 +293,6 @@ function CreateClient(props) {
         </main>
       </div>
     </div>
-    // </Provider>
   );
 }
 
