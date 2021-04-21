@@ -136,11 +136,31 @@ form.create-client-form .input-block .images-container {
   grid-gap: 16px;
 }
 
+form.create-client-form .input-block .images-container button {
+  width: 100%;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+}
+
 form.create-client-form .input-block .images-container img {
   width: 100%;
   height: 96px;
   object-fit: cover;
   border-radius: 20px;
+}
+#vsc-close{
+  cursor: pointer;
+  margin-top: 1px;
+  margin-right: 1px;
+  height: 30px;
+  text-align: center;
+  width: 30px;
+  position: absolute;
+  z-index: 20;
 }
 
 form.create-client-form .input-block .new-image {

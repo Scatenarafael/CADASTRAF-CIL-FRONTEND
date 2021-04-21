@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FaWhatsapp } from "react-icons/fa";
+import { FiTrash2 } from "react-icons/fi";
 import Sidebar from '../elementos/Sidebar';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import '../../styles/pages/client-register.css';
 import Leaflet from 'leaflet';
 import mapMarkerImg from '../../images/marker.svg';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import api from '../../services/api';
 
 const mapIcon = Leaflet.icon({
@@ -18,6 +19,7 @@ const mapIcon = Leaflet.icon({
 
 export default function ClientRegister() {
   const params = useParams();
+  const history = useHistory();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [currentPosition, setCurrentPosition] = useState([-20.2759398, -50.2531764]);
   const [clientData, setClientData] = useState(
@@ -59,6 +61,19 @@ export default function ClientRegister() {
         })
       ;
   }
+  async function handleDelete() {
+    const result = window.confirm('Pressione "ok" caso tenha certeza que quer excluir os dados do cliente!');
+    console.log(result);
+    if (result) {
+      try {
+        await api.delete(`/delete-client/${params.id}`);
+        alert('Cliente excluido com sucesso!');
+        history.push('/');
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
 
   return (
     <div id="page-client-register">
@@ -77,9 +92,9 @@ export default function ClientRegister() {
                     className={activeImageIndex === index ? 'active' : ''}
                     type="button"
                     onClick={
-                      ()=>{
+                      () => {
                         setActiveImageIndex(index);
-                    }}
+                      }}
                   >
                     <img src={image.url} alt={clientData.name} />
                   </button>
@@ -89,15 +104,21 @@ export default function ClientRegister() {
           </div>
 
           <div className="client-register-details-content">
-            <h2>Razão Social: {clientData.name}</h2>
-            <br />
-            <h2>Endereço: {clientData.address}</h2>
-            <br />
-            <h2>Ramo: {clientData.address}</h2>
-            <br />
-            <h2>Detalhes: {clientData.about}</h2>
-            <br />
-
+            <div className="trash-btn-container">
+              <button type="button" className="trash-btn" onClick={handleDelete}>
+                <FiTrash2 size={30} color="black" />
+              </button>
+            </div>
+            <div>
+              <h2>Razão Social: {clientData.name}</h2>
+              <br />
+              <h2>Endereço: {clientData.address}</h2>
+              <br />
+              <h2>Ramo: {clientData.address}</h2>
+              <br />
+              <h2>Detalhes: {clientData.about}</h2>
+              <br />
+            </div>
             <div className="mapview-container-cc">
               <MapContainer
                 center={currentPosition}

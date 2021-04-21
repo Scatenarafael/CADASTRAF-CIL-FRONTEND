@@ -146,9 +146,6 @@ function Mapa(props) {
               Localização atual
 
                 <div>
-                <Link to="/clientes/create-client">
-                  <FiArrowRight size={20} color="#FFF" />
-                </Link>
               </div>
             </Popup>
           </Marker>

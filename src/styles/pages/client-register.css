@@ -99,6 +99,24 @@
   border-radius: 20px;
 }
 
+.client-register-details .client-register-details-content .trash-btn-container{
+  display: flex;
+  justify-content: flex-end;
+
+}
+
+.client-register-details .client-register-details-content .trash-btn{
+  background-color: yellow;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
+  border: 4px solid black;
+}
+
 .client-register-details .client-register-details-content .mapview-container-cc footer a {
   line-height: 24px;
   color: white;

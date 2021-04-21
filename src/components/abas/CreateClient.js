@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { FiPlus } from "react-icons/fi";
+import { VscChromeClose } from "react-icons/vsc";
 import Sidebar from '../elementos/Sidebar'
 import { FaWhatsapp } from "react-icons/fa";
 import api from '../../services/api';
@@ -80,7 +81,9 @@ function CreateClient(props) {
     setImagesPreview(selectedImagesPreview);
 
   }
-
+  function handleDeleteImg(){
+    
+  }
 
   async function handleSubmit() {
     setName(document.getElementById('name-input').value);
@@ -238,7 +241,14 @@ function CreateClient(props) {
                   {
                     imagesPreview.map(image => {
                       return (
-                        <img key={image} src={image} alt={name} />
+                        <button type="button">
+                          <img key={image} src={image} alt={name} />
+                          <VscChromeClose
+                            id="vsc-close"
+                            color="#72e175"
+                            onClick={handleDeleteImg}
+                          />
+                        </button>
                       )
                     })
                   }
